@@ -1,16 +1,17 @@
-#!"C:\xampp\perl\bin\perl.exe"
+#!/usr/bin/perl
 
 use strict;
 use warnings;
-use lib 'C:/xampp/cgi-bin/';
-use table_template;
+use lib '.';
+use TABLE_GEN;
 use DBI;
+
 
 print "Content-Type: text/html; charset=utf-8\n\n";
 
-my $dsn = "SOME_DSN";
-my $user = "SOME_USER";
-my $password = "SOME_PASSWORD";
+my $dsn = "DBI:mysql:dbname=test;host=localhost;port=3306";
+my $user = "tester";
+my $password = "123456";
 
 my $dbh = DBI->connect(
     $dsn, $user, $password,
@@ -19,22 +20,25 @@ my $dbh = DBI->connect(
         AutoCommit => 1,
         PrintError => 1,
     }
-) or die "<p>Cannot connect to DB: $DBI::errstr</p>";
+);
 
-print "<p>Successfully connect to DB!</p>";
-
-
-my $sth = $dbh->prepare("SELECT id, (first_name || ' ' || last_name) AS full_name, phone, COALESCE(email, 'No email') AS email FROM customers;");
+my $sth = $dbh->prepare("SELECT id, CONCAT(first_name, ' ', last_name) AS full_name, phone, IFNULL(email, 'No email') AS email FROM customers;");
 $sth->execute();
 
+#Records from table 'customers'
 my @records;
 
 while (my $row = $sth->fetchrow_hashref()){
     push @records, $row;
 }
 
-my $html_table = table_template::gen_table(\@records);
+#customers table generation
+my $html_table = TABLE_GEN::gen_table(\@records);
+
+#printing customers table
 print $html_table;
 
 $sth->finish;
 $dbh->disconnect;
+
+1;

@@ -1,10 +1,10 @@
-package table_template;
+package TABLE_GEN;
 
 use strict;
 use warnings;
 
-sub gen_table{
-    print "gen_table\n";
+#**********************************************************
+sub gen_table{ #Customers table generation
     my ($rows_ref) = @_;
 
     my $html = "<table border='1' cellpadding='5' style='border-collapse: collapse;'>\n";
