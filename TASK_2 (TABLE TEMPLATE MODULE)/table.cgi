@@ -16,7 +16,7 @@ my $password = "123456";
 my $dbh = DBI->connect(
     $dsn, $user, $password,
     {
-        RaiseError => 1,
+        RaiseError => 0,
         AutoCommit => 1,
         PrintError => 1,
     }
